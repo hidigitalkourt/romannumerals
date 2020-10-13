@@ -1,20 +1,20 @@
 using System;
 using FluentAssertions;
+using RomanNumerals;
 using Xunit;
 
 namespace RomanNumeralsTests
 {
-    public class RomanNumeralsTests
+    public class RomanNumberConverterTests
     {
         [Fact]
         public void ReturnZeroFortheNoLetters()
         {
-            var input = "";
-            var expected = 0;
+            var input = 0;
+            var expected = "";
             
-            var acutal = RomanNumerals.RomanLetters.ConvertIntoNumbers(input);     
+            var acutal = RomanNumberConverter.ConvertIntoRomans(input);     
             acutal.Should().Be(expected);
-                
         }
     }
 }
