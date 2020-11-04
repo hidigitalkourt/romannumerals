@@ -7,6 +7,8 @@ namespace RomanNumerals
 {
     public class RomanNumberConverter
     {
+        private int remainder;
+        private List<string> romanNumeralList = new List<string>();
         public Dictionary<int, string> RomanLookUp = new Dictionary<int, string>()
         { 
             {0, "" },
@@ -44,42 +46,37 @@ namespace RomanNumerals
         };
         public string ConvertIntoRomans(int numbers)
         {             
-            var romanNumeralList = new List<string>();
-            if (numbers.ToString().Length == 1)
+            var numberLength = numbers.ToString().Length;
+            var thousandsPlaceRounding = Math.Floor((double)numbers/1000) * 1000;
+        
+            if (RomanLookUp.ContainsKey(numbers))
             {
-                return RomanLookUp[numbers];
+                romanNumeralList.Add(RomanLookUp[(int)numbers]);
             }
-            else if (numbers.ToString().Length == 2)
+            else if (numberLength == 2)
             { 
-                var firstNum = Math.Floor((double)numbers/10) * 10;  
-                var remainder = numbers % firstNum;
-                romanNumeralList.Add(RomanLookUp[(int)firstNum]);
-                romanNumeralList.Add(RomanLookUp[(int)remainder]);
+                remainder = numbers % (placeRounding(numbers, 10) * 10);
+                romanNumeralList.Add(RomanLookUp[(placeRounding(numbers, 10) * 10)]);
+                ConvertIntoRomans(remainder);
             }
-            else if (numbers.ToString().Length == 3)
+            else if (numberLength == 3)
             {
-                var first = Math.Floor((double)numbers/100) * 100;
-                var second = Math.Floor((double)(numbers % first)/10) * 10;
-                var third = numbers % (first + second);
-                romanNumeralList.Add(RomanLookUp[(int)first]);
-                romanNumeralList.Add(RomanLookUp[(int)second]);
-                romanNumeralList.Add(RomanLookUp[(int)third]);
+                remainder = numbers % (placeRounding(numbers, 100) * 100);
+                romanNumeralList.Add(RomanLookUp[(placeRounding(numbers, 100) * 100)]);
+                ConvertIntoRomans(remainder);
             }
             else
             {
-                var first = Math.Floor((double)numbers/1000) * 1000;
-                var second = Math.Floor((double)(numbers % first)/100) * 100;
-                var third = Math.Floor((double)(numbers % (first + second))/10) * 10;
-                var fourth = numbers % (first + second + third);
-                romanNumeralList.Add(RomanLookUp[(int)first]);
-                romanNumeralList.Add(RomanLookUp[(int)second]);
-                romanNumeralList.Add(RomanLookUp[(int)third]);
-                romanNumeralList.Add(RomanLookUp[(int)fourth]);
+                remainder = numbers % (placeRounding(numbers, 1000) * 1000);
+                romanNumeralList.Add(RomanLookUp[(placeRounding(numbers, 1000) * 1000)]);
+                ConvertIntoRomans(remainder);
             }
-            Console.WriteLine(JsonConvert.SerializeObject(romanNumeralList));
-
             return string.Join("", romanNumeralList);
+        }
 
+        private int placeRounding(int num, int divisor)
+        {
+            return (int)Math.Floor((double)num/divisor);
         }
     }
 }
