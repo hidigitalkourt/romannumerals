@@ -8,7 +8,7 @@ namespace RomanNumerals
     public class RomanNumberConverter
     {
         private int remainder;
-        private List<string> romanNumeralList = new List<string>();
+        private string romanNumeral;
         public Dictionary<int, string> RomanLookUp = new Dictionary<int, string>()
         { 
             {0, "" },
@@ -44,39 +44,42 @@ namespace RomanNumerals
             {3000, "MMM" },
             {4000, "MMMM"}
         };
-        public string ConvertIntoRomans(int numbers)
+        public string ConvertIntoRomans(int number)
         {             
-            var numberLength = numbers.ToString().Length;
-            var thousandsPlaceRounding = Math.Floor((double)numbers/1000) * 1000;
+            var numberLength = number.ToString().Length;
         
-            if (RomanLookUp.ContainsKey(numbers))
+            if (RomanLookUp.ContainsKey(number))
             {
-                romanNumeralList.Add(RomanLookUp[(int)numbers]);
+                romanNumeral += RomanLookUp[(int)number];
             }
             else if (numberLength == 2)
             { 
-                remainder = numbers % (placeRounding(numbers, 10) * 10);
-                romanNumeralList.Add(RomanLookUp[(placeRounding(numbers, 10) * 10)]);
+                remainder = GetRemainder(number, 10);
+                romanNumeral += GetRomanNumeral(number, 10);
                 ConvertIntoRomans(remainder);
             }
             else if (numberLength == 3)
             {
-                remainder = numbers % (placeRounding(numbers, 100) * 100);
-                romanNumeralList.Add(RomanLookUp[(placeRounding(numbers, 100) * 100)]);
+                remainder = GetRemainder(number, 100);
+                romanNumeral += GetRomanNumeral(number, 100);
                 ConvertIntoRomans(remainder);
             }
             else
             {
-                remainder = numbers % (placeRounding(numbers, 1000) * 1000);
-                romanNumeralList.Add(RomanLookUp[(placeRounding(numbers, 1000) * 1000)]);
+                remainder = GetRemainder(number, 1000);
+                romanNumeral += GetRomanNumeral(number, 1000);
                 ConvertIntoRomans(remainder);
             }
-            return string.Join("", romanNumeralList);
+            return romanNumeral;
         }
 
-        private int placeRounding(int num, int divisor)
+        private string GetRomanNumeral(int num, int divisor)
         {
-            return (int)Math.Floor((double)num/divisor);
+            return RomanLookUp[((int)Math.Floor((double)num/divisor) * divisor)];
+        }
+        private int GetRemainder(int num, int divisor)
+        {
+            return num % ((int)Math.Floor((double)num/divisor) * divisor);
         }
     }
 }
